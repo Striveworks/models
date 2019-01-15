@@ -84,18 +84,18 @@ def create_tf_example(group, path, label_map_path, relative_bboxes=False):
     return tf_example
 
 
-def main(args):
-    writer = tf.python_io.TFRecordWriter(args.output_path)
-    path = os.path.join(args.images_path)
-    examples = pd.read_csv(args.csv_input)
-    grouped = split(examples, 'filename')
+def convert(df, images_path, label_map_path, output_path,
+            relative_bboxes=False):
+    writer = tf.python_io.TFRecordWriter(output_path)
+    path = os.path.join(images_path)
+    grouped = split(df, 'filename')
     for group in grouped:
-        tf_example = create_tf_example(group, path, args.label_map_path,
-                                       relative_bboxes=args.relative_bboxes)
+        tf_example = create_tf_example(group, path, label_map_path,
+                                       relative_bboxes=relative_bboxes)
         writer.write(tf_example.SerializeToString())
 
     writer.close()
-    output_path = os.path.join(os.getcwd(), args.output_path)
+    output_path = os.path.join(os.getcwd(), output_path)
     print('Successfully created the TFRecords: {}'.format(output_path))
 
 
@@ -108,4 +108,6 @@ if __name__ == '__main__':
     parser.add_argument('--relative_bboxes', action='store_true')
 
     args = parser.parse_args()
-    main(args)
+    convert(csv_input=pd.read_csv(args.csv_input), images_path=args.images_path,
+            label_map_path=args.label_map_path, output_path=args.output_path,
+            relative_bboxes=args.relative_bboxes)
