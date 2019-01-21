@@ -29,7 +29,7 @@ from official.resnet.keras import keras_cifar_main
 from official.resnet.keras import keras_common
 
 
-DATA_DIR = '/data/cifar10_data/'
+DATA_DIR = '/data/cifar10_data/cifar-10-batches-bin'
 MIN_TOP_1_ACCURACY = 0.925
 MAX_TOP_1_ACCURACY = 0.938
 
@@ -85,6 +85,7 @@ class KerasCifar10BenchmarkTests(object):
     """Test keras based model with Keras fit and distribution strategies."""
     self._setup()
     flags.FLAGS.num_gpus = 2
+    flags.FLAGS.data_dir = DATA_DIR
     flags.FLAGS.data_dir = self._get_model_dir('keras_resnet56_2_gpu')
     flags.FLAGS.batch_size = 128
     flags.FLAGS.train_epochs = 182
