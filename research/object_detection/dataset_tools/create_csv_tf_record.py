@@ -12,6 +12,7 @@ Usage:
 """
 import os
 import io
+import numpy as np
 import pandas as pd
 import tensorflow as tf
 import argparse
@@ -106,11 +107,18 @@ if __name__ == '__main__':
     parser.add_argument('--label_map_path', type=str)
     parser.add_argument('--images_path', type=str)
     parser.add_argument('--relative_bboxes', action='store_true')
+    parser.add_argument('--keep_order', action='store_true')
 
     args = parser.parse_args()
 
     os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
 
-    convert(df=pd.read_csv(args.csv_input), images_path=args.images_path,
+    df = pd.read_csv(args.csv_input)
+    if not args.keep_order:
+        # shuffle
+        df.reset_index(inplace=True, drop=True)
+        df = df.loc[np.random.permutation(len(df))]
+
+    convert(df, images_path=args.images_path,
             label_map_path=args.label_map_path, output_path=args.output_path,
             relative_bboxes=args.relative_bboxes)
