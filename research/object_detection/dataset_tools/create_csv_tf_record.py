@@ -108,6 +108,9 @@ if __name__ == '__main__':
     parser.add_argument('--relative_bboxes', action='store_true')
 
     args = parser.parse_args()
-    convert(csv_input=pd.read_csv(args.csv_input), images_path=args.images_path,
+
+    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+
+    convert(df=pd.read_csv(args.csv_input), images_path=args.images_path,
             label_map_path=args.label_map_path, output_path=args.output_path,
             relative_bboxes=args.relative_bboxes)
